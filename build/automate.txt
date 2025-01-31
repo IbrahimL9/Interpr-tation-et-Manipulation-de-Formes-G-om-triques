@@ -1,0 +1,3103 @@
+Terminaux inutilisés dans la grammaire
+
+    TANT_QUE
+    REPETE
+    FONCTION
+    T
+
+
+Règles inutiles dans l'analyseur à cause de conflits
+
+   39 variable: IDENT '.' attributs_variable PV
+   40         | fig '[' NUMBER ']' '.' attributs_variable PV
+
+
+État 0 conflits: 23 décalage/réduction
+État 2 conflits: 23 décalage/réduction
+État 25 conflits: 23 décalage/réduction
+État 35 conflits: 1 décalage/réduction
+État 177 conflits: 1 décalage/réduction
+État 254 conflits: 1 décalage/réduction
+
+
+Grammaire
+
+    0 $accept: programme $end
+
+    1 programme: instruction programme
+    2          | NL programme
+    3          | $end
+
+    4 instruction: expression
+    5            | affectation PV NL
+    6            | variable NL
+    7            | taille PV NL
+    8            | modif
+
+    9 expression: ope
+
+   10 taille: TAILLE NUMBER NUMBER
+
+   11 figure: RECTANGLE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+   12       | CARRE NUMBER NUMBER NUMBER
+   13       | TRIANGLE NUMBER NUMBER NUMBER NUMBER
+   14       | CERCLE NUMBER NUMBER NUMBER
+   15       | ELLIPSE NUMBER NUMBER NUMBER NUMBER
+   16       | LIGNE NUMBER NUMBER NUMBER NUMBER
+   17       | CHEMIN coordonnees
+   18       | TEXTE NUMBER NUMBER CHAINE CHAINE
+
+   19 figure_att: figure FLECHE attributs liste_fleche PV
+   20           | figure OUVRE_ACCOLADE NL attributs PV liste_acc FERME_ACCOLADE
+   21           | figure PV
+
+   22 liste_fleche: ET attributs liste_fleche
+   23             | %empty
+
+   24 liste_acc: NL attributs PV NL liste_acc
+   25          | %empty
+
+   26 coordonnees: NUMBER NUMBER
+   27            | coordonnees V NUMBER NUMBER
+
+   28 attributs: COULEUR DP color
+   29          | ROTATION DP NUMBER
+   30          | REMPLISSAGE DP color
+   31          | OPACITE DP NUMBER
+   32          | EPAISSEUR DP NUMBER
+
+   33 attributs_variable: COULEUR '=' color
+   34                   | ROTATION '=' NUMBER
+   35                   | REMPLISSAGE '=' color
+   36                   | OPACITE '=' NUMBER
+   37                   | EPAISSEUR '=' NUMBER
+
+   38 variable: IDENT '=' figure_att
+   39         | IDENT '.' attributs_variable PV
+   40         | fig '[' NUMBER ']' '.' attributs_variable PV
+   41         | figure_att
+   42         | fig '[' NUMBER ']' PV
+   43         | ENT IDENT '=' NUMBER PV
+   44         | REEL IDENT '=' DOUBLE PV
+   45         | BOOLEEN IDENT '=' BOOL PV
+   46         | COULEUR IDENT '=' color PV
+
+   47 fig: RECTANGLE
+   48    | CARRE
+   49    | TRIANGLE
+   50    | CERCLE
+   51    | ELLIPSE
+   52    | LIGNE
+   53    | CHEMIN
+   54    | TEXTE
+
+   55 critere: X1
+   56        | Y1
+   57        | X2
+   58        | Y2
+   59        | X3
+   60        | Y3
+   61        | X4
+   62        | Y4
+   63        | TAILLE
+   64        | X
+   65        | Y
+   66        | LARGEUR
+   67        | HAUTEUR
+   68        | RAY
+
+   69 modif: fig '[' NUMBER ']' '.' critere '=' NUMBER
+   70      | IDENT '.' critere '=' NUMBER
+
+   71 color: coul
+   72      | NOM_HEX
+   73      | NOM_RGB
+
+   74 coul: rouge
+   75     | vert
+   76     | bleu
+   77     | jaune
+   78     | violet
+   79     | magenta
+   80     | cyan
+   81     | noir
+   82     | blanc
+
+   83 ope: SI comparaison ALORS OUVRE_ACCOLADE NL ope FERME_ACCOLADE NL suite
+   84    | IDENT '.' attributs_variable PV NL
+   85    | fig '[' NUMBER ']' '.' attributs_variable PV NL
+   86    | IDENT '.' critere '=' NUMBER PV NL
+   87    | fig '[' NUMBER ']' '.' critere '=' NUMBER PV NL
+   88    | %empty
+
+   89 suite: SINON OUVRE_ACCOLADE NL ope FERME_ACCOLADE
+   90      | %empty
+
+   91 SIGNE: G
+   92      | GE
+   93      | L
+   94      | LE
+   95      | E
+   96      | NE
+
+   97 IS: EST
+   98   | ESTPAS
+
+   99 comparaison: predicat
+  100            | '(' predicat ETLOG comparaison ')'
+  101            | '(' predicat OU comparaison ')'
+
+  102 predicat: '(' IDENT '.' critere SIGNE NUMBER ')'
+  103         | '(' IDENT '.' COULEUR IS color ')'
+  104         | '(' fig '[' NUMBER ']' '.' critere SIGNE NUMBER ')'
+  105         | '(' fig '[' NUMBER ']' '.' COULEUR IS color ')'
+
+  106 expression: operation
+
+  107 affectation: '='
+
+  108 operation: NUMBER
+  109          | BOOL
+  110          | DOUBLE
+  111          | '(' operation ')'
+  112          | operation '+' operation
+  113          | operation '-' operation
+  114          | operation '*' operation
+  115          | operation '/' operation
+  116          | '-' operation
+
+
+Terminaux, suivis des règles où ils apparaissent
+
+    $end (0) 0 3
+    '(' (40) 100 101 102 103 104 105 111
+    ')' (41) 100 101 102 103 104 105 111
+    '*' (42) 114
+    '+' (43) 112
+    '-' (45) 113 116
+    '.' (46) 39 40 69 70 84 85 86 87 102 103 104 105
+    '/' (47) 115
+    '=' (61) 33 34 35 36 37 38 43 44 45 46 69 70 86 87 107
+    '[' (91) 40 42 69 85 87 104 105
+    ']' (93) 40 42 69 85 87 104 105
+    error (256)
+    NL (258) 2 5 6 7 20 24 83 84 85 86 87 89
+    NUMBER <int> (259) 10 11 12 13 14 15 16 18 26 27 29 31 32 34 36 37 40 42 43 69 70 85 86 87 102 104 105 108
+    TAILLE (260) 10 63
+    CARRE (261) 12 48
+    RECTANGLE (262) 11 47
+    TRIANGLE (263) 13 49
+    CERCLE (264) 14 50
+    ELLIPSE (265) 15 51
+    LIGNE (266) 16 52
+    CHEMIN (267) 17 53
+    TEXTE (268) 18 54
+    FLECHE (269) 19
+    ET (270) 22
+    OUVRE_ACCOLADE (271) 20 83 89
+    FERME_ACCOLADE (272) 20 83 89
+    COULEUR (273) 28 33 46 103 105
+    ROTATION (274) 29 34
+    REMPLISSAGE (275) 30 35
+    OPACITE (276) 31 36
+    EPAISSEUR (277) 32 37
+    DP (278) 28 29 30 31 32
+    SI (279) 83
+    ALORS (280) 83
+    SINON (281) 89
+    TANT_QUE (282)
+    REPETE (283)
+    FONCTION (284)
+    BOOLEEN (285) 45
+    ENT (286) 43
+    REEL (287) 44
+    X (288) 64
+    Y (289) 65
+    X1 (290) 55
+    Y1 (291) 56
+    X2 (292) 57
+    Y2 (293) 58
+    X3 (294) 59
+    Y3 (295) 60
+    X4 (296) 61
+    Y4 (297) 62
+    HAUTEUR (298) 67
+    LARGEUR (299) 66
+    RAY (300) 68
+    T (301)
+    BOOL <bool> (302) 45 109
+    DOUBLE <double> (303) 44 110
+    rouge (304) 74
+    vert (305) 75
+    bleu (306) 76
+    jaune (307) 77
+    violet (308) 78
+    magenta (309) 79
+    cyan (310) 80
+    noir (311) 81
+    blanc (312) 82
+    NOM_HEX <std::string> (313) 72
+    NOM_RGB <std::string> (314) 73
+    L (315) 93
+    LE (316) 94
+    G (317) 91
+    GE (318) 92
+    E (319) 95
+    NE (320) 96
+    ETLOG (321) 100
+    OU (322) 101
+    ESTPAS (323) 98
+    EST (324) 97
+    IDENT <std::string> (325) 38 39 43 44 45 46 70 84 86 102 103
+    CHAINE <std::string> (326) 18
+    PV (327) 5 7 19 20 21 24 39 40 42 43 44 45 46 84 85 86 87
+    V (328) 27
+    NEG (329)
+
+
+Non-terminaux, suivis des règles où ils apparaissent
+
+    $accept (85)
+        à gauche: 0
+    programme (86)
+        à gauche: 1 2 3
+        à droite: 0 1 2
+    instruction (87)
+        à gauche: 4 5 6 7 8
+        à droite: 1
+    expression (88)
+        à gauche: 9 106
+        à droite: 4
+    taille <std::shared_ptr<Taille>> (89)
+        à gauche: 10
+        à droite: 7
+    figure <std::shared_ptr<Forme>> (90)
+        à gauche: 11 12 13 14 15 16 17 18
+        à droite: 19 20 21
+    figure_att <std::shared_ptr<Forme>> (91)
+        à gauche: 19 20 21
+        à droite: 38 41
+    liste_fleche <std::vector<Attributs>> (92)
+        à gauche: 22 23
+        à droite: 19 22
+    liste_acc <std::vector<Attributs>> (93)
+        à gauche: 24 25
+        à droite: 20 24
+    coordonnees <std::vector<int>> (94)
+        à gauche: 26 27
+        à droite: 17 27
+    attributs <Attributs> (95)
+        à gauche: 28 29 30 31 32
+        à droite: 19 20 22 24
+    attributs_variable <Attributs> (96)
+        à gauche: 33 34 35 36 37
+        à droite: 39 40 84 85
+    variable <std::string> (97)
+        à gauche: 38 39 40 41 42 43 44 45 46
+        à droite: 6
+    fig <std::string> (98)
+        à gauche: 47 48 49 50 51 52 53 54
+        à droite: 40 42 69 85 87 104 105
+    critere <std::string> (99)
+        à gauche: 55 56 57 58 59 60 61 62 63 64 65 66 67 68
+        à droite: 69 70 86 87 102 104
+    modif (100)
+        à gauche: 69 70
+        à droite: 8
+    color <std::string> (101)
+        à gauche: 71 72 73
+        à droite: 28 30 33 35 46 103 105
+    coul <std::string> (102)
+        à gauche: 74 75 76 77 78 79 80 81 82
+        à droite: 71
+    ope <std::shared_ptr<Expression>> (103)
+        à gauche: 83 84 85 86 87 88
+        à droite: 9 83 89
+    suite <std::shared_ptr<Expression>> (104)
+        à gauche: 89 90
+        à droite: 83
+    SIGNE <std::string> (105)
+        à gauche: 91 92 93 94 95 96
+        à droite: 102 104
+    IS <bool> (106)
+        à gauche: 97 98
+        à droite: 103 105
+    comparaison <bool> (107)
+        à gauche: 99 100 101
+        à droite: 83 100 101
+    predicat <bool> (108)
+        à gauche: 102 103 104 105
+        à droite: 99 100 101
+    affectation (109)
+        à gauche: 107
+        à droite: 5
+    operation <int> (110)
+        à gauche: 108 109 110 111 112 113 114 115 116
+        à droite: 106 111 112 113 114 115 116
+
+
+État 0
+
+    0 $accept: • programme $end
+
+    $end       décalage et aller à l'état 1
+    NL         décalage et aller à l'état 2
+    NUMBER     décalage et aller à l'état 3
+    TAILLE     décalage et aller à l'état 4
+    CARRE      décalage et aller à l'état 5
+    RECTANGLE  décalage et aller à l'état 6
+    TRIANGLE   décalage et aller à l'état 7
+    CERCLE     décalage et aller à l'état 8
+    ELLIPSE    décalage et aller à l'état 9
+    LIGNE      décalage et aller à l'état 10
+    CHEMIN     décalage et aller à l'état 11
+    TEXTE      décalage et aller à l'état 12
+    COULEUR    décalage et aller à l'état 13
+    SI         décalage et aller à l'état 14
+    BOOLEEN    décalage et aller à l'état 15
+    ENT        décalage et aller à l'état 16
+    REEL       décalage et aller à l'état 17
+    BOOL       décalage et aller à l'état 18
+    DOUBLE     décalage et aller à l'état 19
+    IDENT      décalage et aller à l'état 20
+    '-'        décalage et aller à l'état 21
+    '='        décalage et aller à l'état 22
+    '('        décalage et aller à l'état 23
+
+    $end       [réduction par utilisation de la règle 88 (ope)]
+    NL         [réduction par utilisation de la règle 88 (ope)]
+    NUMBER     [réduction par utilisation de la règle 88 (ope)]
+    TAILLE     [réduction par utilisation de la règle 88 (ope)]
+    CARRE      [réduction par utilisation de la règle 88 (ope)]
+    RECTANGLE  [réduction par utilisation de la règle 88 (ope)]
+    TRIANGLE   [réduction par utilisation de la règle 88 (ope)]
+    CERCLE     [réduction par utilisation de la règle 88 (ope)]
+    ELLIPSE    [réduction par utilisation de la règle 88 (ope)]
+    LIGNE      [réduction par utilisation de la règle 88 (ope)]
+    CHEMIN     [réduction par utilisation de la règle 88 (ope)]
+    TEXTE      [réduction par utilisation de la règle 88 (ope)]
+    COULEUR    [réduction par utilisation de la règle 88 (ope)]
+    SI         [réduction par utilisation de la règle 88 (ope)]
+    BOOLEEN    [réduction par utilisation de la règle 88 (ope)]
+    ENT        [réduction par utilisation de la règle 88 (ope)]
+    REEL       [réduction par utilisation de la règle 88 (ope)]
+    BOOL       [réduction par utilisation de la règle 88 (ope)]
+    DOUBLE     [réduction par utilisation de la règle 88 (ope)]
+    IDENT      [réduction par utilisation de la règle 88 (ope)]
+    '-'        [réduction par utilisation de la règle 88 (ope)]
+    '='        [réduction par utilisation de la règle 88 (ope)]
+    '('        [réduction par utilisation de la règle 88 (ope)]
+
+    programme    aller à l'état 24
+    instruction  aller à l'état 25
+    expression   aller à l'état 26
+    taille       aller à l'état 27
+    figure       aller à l'état 28
+    figure_att   aller à l'état 29
+    variable     aller à l'état 30
+    fig          aller à l'état 31
+    modif        aller à l'état 32
+    ope          aller à l'état 33
+    affectation  aller à l'état 34
+    operation    aller à l'état 35
+
+
+État 1
+
+    3 programme: $end •
+
+    $défaut  réduction par utilisation de la règle 3 (programme)
+
+
+État 2
+
+    2 programme: NL • programme
+
+    $end       décalage et aller à l'état 1
+    NL         décalage et aller à l'état 2
+    NUMBER     décalage et aller à l'état 3
+    TAILLE     décalage et aller à l'état 4
+    CARRE      décalage et aller à l'état 5
+    RECTANGLE  décalage et aller à l'état 6
+    TRIANGLE   décalage et aller à l'état 7
+    CERCLE     décalage et aller à l'état 8
+    ELLIPSE    décalage et aller à l'état 9
+    LIGNE      décalage et aller à l'état 10
+    CHEMIN     décalage et aller à l'état 11
+    TEXTE      décalage et aller à l'état 12
+    COULEUR    décalage et aller à l'état 13
+    SI         décalage et aller à l'état 14
+    BOOLEEN    décalage et aller à l'état 15
+    ENT        décalage et aller à l'état 16
+    REEL       décalage et aller à l'état 17
+    BOOL       décalage et aller à l'état 18
+    DOUBLE     décalage et aller à l'état 19
+    IDENT      décalage et aller à l'état 20
+    '-'        décalage et aller à l'état 21
+    '='        décalage et aller à l'état 22
+    '('        décalage et aller à l'état 23
+
+    $end       [réduction par utilisation de la règle 88 (ope)]
+    NL         [réduction par utilisation de la règle 88 (ope)]
+    NUMBER     [réduction par utilisation de la règle 88 (ope)]
+    TAILLE     [réduction par utilisation de la règle 88 (ope)]
+    CARRE      [réduction par utilisation de la règle 88 (ope)]
+    RECTANGLE  [réduction par utilisation de la règle 88 (ope)]
+    TRIANGLE   [réduction par utilisation de la règle 88 (ope)]
+    CERCLE     [réduction par utilisation de la règle 88 (ope)]
+    ELLIPSE    [réduction par utilisation de la règle 88 (ope)]
+    LIGNE      [réduction par utilisation de la règle 88 (ope)]
+    CHEMIN     [réduction par utilisation de la règle 88 (ope)]
+    TEXTE      [réduction par utilisation de la règle 88 (ope)]
+    COULEUR    [réduction par utilisation de la règle 88 (ope)]
+    SI         [réduction par utilisation de la règle 88 (ope)]
+    BOOLEEN    [réduction par utilisation de la règle 88 (ope)]
+    ENT        [réduction par utilisation de la règle 88 (ope)]
+    REEL       [réduction par utilisation de la règle 88 (ope)]
+    BOOL       [réduction par utilisation de la règle 88 (ope)]
+    DOUBLE     [réduction par utilisation de la règle 88 (ope)]
+    IDENT      [réduction par utilisation de la règle 88 (ope)]
+    '-'        [réduction par utilisation de la règle 88 (ope)]
+    '='        [réduction par utilisation de la règle 88 (ope)]
+    '('        [réduction par utilisation de la règle 88 (ope)]
+
+    programme    aller à l'état 36
+    instruction  aller à l'état 25
+    expression   aller à l'état 26
+    taille       aller à l'état 27
+    figure       aller à l'état 28
+    figure_att   aller à l'état 29
+    variable     aller à l'état 30
+    fig          aller à l'état 31
+    modif        aller à l'état 32
+    ope          aller à l'état 33
+    affectation  aller à l'état 34
+    operation    aller à l'état 35
+
+
+État 3
+
+  108 operation: NUMBER •
+
+    $défaut  réduction par utilisation de la règle 108 (operation)
+
+
+État 4
+
+   10 taille: TAILLE • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 37
+
+
+État 5
+
+   12 figure: CARRE • NUMBER NUMBER NUMBER
+   48 fig: CARRE •
+
+    NUMBER  décalage et aller à l'état 38
+
+    $défaut  réduction par utilisation de la règle 48 (fig)
+
+
+État 6
+
+   11 figure: RECTANGLE • NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+   47 fig: RECTANGLE •
+
+    NUMBER  décalage et aller à l'état 39
+
+    $défaut  réduction par utilisation de la règle 47 (fig)
+
+
+État 7
+
+   13 figure: TRIANGLE • NUMBER NUMBER NUMBER NUMBER
+   49 fig: TRIANGLE •
+
+    NUMBER  décalage et aller à l'état 40
+
+    $défaut  réduction par utilisation de la règle 49 (fig)
+
+
+État 8
+
+   14 figure: CERCLE • NUMBER NUMBER NUMBER
+   50 fig: CERCLE •
+
+    NUMBER  décalage et aller à l'état 41
+
+    $défaut  réduction par utilisation de la règle 50 (fig)
+
+
+État 9
+
+   15 figure: ELLIPSE • NUMBER NUMBER NUMBER NUMBER
+   51 fig: ELLIPSE •
+
+    NUMBER  décalage et aller à l'état 42
+
+    $défaut  réduction par utilisation de la règle 51 (fig)
+
+
+État 10
+
+   16 figure: LIGNE • NUMBER NUMBER NUMBER NUMBER
+   52 fig: LIGNE •
+
+    NUMBER  décalage et aller à l'état 43
+
+    $défaut  réduction par utilisation de la règle 52 (fig)
+
+
+État 11
+
+   17 figure: CHEMIN • coordonnees
+   53 fig: CHEMIN •
+
+    NUMBER  décalage et aller à l'état 44
+
+    $défaut  réduction par utilisation de la règle 53 (fig)
+
+    coordonnees  aller à l'état 45
+
+
+État 12
+
+   18 figure: TEXTE • NUMBER NUMBER CHAINE CHAINE
+   54 fig: TEXTE •
+
+    NUMBER  décalage et aller à l'état 46
+
+    $défaut  réduction par utilisation de la règle 54 (fig)
+
+
+État 13
+
+   46 variable: COULEUR • IDENT '=' color PV
+
+    IDENT  décalage et aller à l'état 47
+
+
+État 14
+
+   83 ope: SI • comparaison ALORS OUVRE_ACCOLADE NL ope FERME_ACCOLADE NL suite
+
+    '('  décalage et aller à l'état 48
+
+    comparaison  aller à l'état 49
+    predicat     aller à l'état 50
+
+
+État 15
+
+   45 variable: BOOLEEN • IDENT '=' BOOL PV
+
+    IDENT  décalage et aller à l'état 51
+
+
+État 16
+
+   43 variable: ENT • IDENT '=' NUMBER PV
+
+    IDENT  décalage et aller à l'état 52
+
+
+État 17
+
+   44 variable: REEL • IDENT '=' DOUBLE PV
+
+    IDENT  décalage et aller à l'état 53
+
+
+État 18
+
+  109 operation: BOOL •
+
+    $défaut  réduction par utilisation de la règle 109 (operation)
+
+
+État 19
+
+  110 operation: DOUBLE •
+
+    $défaut  réduction par utilisation de la règle 110 (operation)
+
+
+État 20
+
+   38 variable: IDENT • '=' figure_att
+   39         | IDENT • '.' attributs_variable PV
+   70 modif: IDENT • '.' critere '=' NUMBER
+   84 ope: IDENT • '.' attributs_variable PV NL
+   86    | IDENT • '.' critere '=' NUMBER PV NL
+
+    '='  décalage et aller à l'état 54
+    '.'  décalage et aller à l'état 55
+
+
+État 21
+
+  116 operation: '-' • operation
+
+    NUMBER  décalage et aller à l'état 3
+    BOOL    décalage et aller à l'état 18
+    DOUBLE  décalage et aller à l'état 19
+    '-'     décalage et aller à l'état 21
+    '('     décalage et aller à l'état 23
+
+    operation  aller à l'état 56
+
+
+État 22
+
+  107 affectation: '=' •
+
+    $défaut  réduction par utilisation de la règle 107 (affectation)
+
+
+État 23
+
+  111 operation: '(' • operation ')'
+
+    NUMBER  décalage et aller à l'état 3
+    BOOL    décalage et aller à l'état 18
+    DOUBLE  décalage et aller à l'état 19
+    '-'     décalage et aller à l'état 21
+    '('     décalage et aller à l'état 23
+
+    operation  aller à l'état 57
+
+
+État 24
+
+    0 $accept: programme • $end
+
+    $end  décalage et aller à l'état 58
+
+
+État 25
+
+    1 programme: instruction • programme
+
+    $end       décalage et aller à l'état 1
+    NL         décalage et aller à l'état 2
+    NUMBER     décalage et aller à l'état 3
+    TAILLE     décalage et aller à l'état 4
+    CARRE      décalage et aller à l'état 5
+    RECTANGLE  décalage et aller à l'état 6
+    TRIANGLE   décalage et aller à l'état 7
+    CERCLE     décalage et aller à l'état 8
+    ELLIPSE    décalage et aller à l'état 9
+    LIGNE      décalage et aller à l'état 10
+    CHEMIN     décalage et aller à l'état 11
+    TEXTE      décalage et aller à l'état 12
+    COULEUR    décalage et aller à l'état 13
+    SI         décalage et aller à l'état 14
+    BOOLEEN    décalage et aller à l'état 15
+    ENT        décalage et aller à l'état 16
+    REEL       décalage et aller à l'état 17
+    BOOL       décalage et aller à l'état 18
+    DOUBLE     décalage et aller à l'état 19
+    IDENT      décalage et aller à l'état 20
+    '-'        décalage et aller à l'état 21
+    '='        décalage et aller à l'état 22
+    '('        décalage et aller à l'état 23
+
+    $end       [réduction par utilisation de la règle 88 (ope)]
+    NL         [réduction par utilisation de la règle 88 (ope)]
+    NUMBER     [réduction par utilisation de la règle 88 (ope)]
+    TAILLE     [réduction par utilisation de la règle 88 (ope)]
+    CARRE      [réduction par utilisation de la règle 88 (ope)]
+    RECTANGLE  [réduction par utilisation de la règle 88 (ope)]
+    TRIANGLE   [réduction par utilisation de la règle 88 (ope)]
+    CERCLE     [réduction par utilisation de la règle 88 (ope)]
+    ELLIPSE    [réduction par utilisation de la règle 88 (ope)]
+    LIGNE      [réduction par utilisation de la règle 88 (ope)]
+    CHEMIN     [réduction par utilisation de la règle 88 (ope)]
+    TEXTE      [réduction par utilisation de la règle 88 (ope)]
+    COULEUR    [réduction par utilisation de la règle 88 (ope)]
+    SI         [réduction par utilisation de la règle 88 (ope)]
+    BOOLEEN    [réduction par utilisation de la règle 88 (ope)]
+    ENT        [réduction par utilisation de la règle 88 (ope)]
+    REEL       [réduction par utilisation de la règle 88 (ope)]
+    BOOL       [réduction par utilisation de la règle 88 (ope)]
+    DOUBLE     [réduction par utilisation de la règle 88 (ope)]
+    IDENT      [réduction par utilisation de la règle 88 (ope)]
+    '-'        [réduction par utilisation de la règle 88 (ope)]
+    '='        [réduction par utilisation de la règle 88 (ope)]
+    '('        [réduction par utilisation de la règle 88 (ope)]
+
+    programme    aller à l'état 59
+    instruction  aller à l'état 25
+    expression   aller à l'état 26
+    taille       aller à l'état 27
+    figure       aller à l'état 28
+    figure_att   aller à l'état 29
+    variable     aller à l'état 30
+    fig          aller à l'état 31
+    modif        aller à l'état 32
+    ope          aller à l'état 33
+    affectation  aller à l'état 34
+    operation    aller à l'état 35
+
+
+État 26
+
+    4 instruction: expression •
+
+    $défaut  réduction par utilisation de la règle 4 (instruction)
+
+
+État 27
+
+    7 instruction: taille • PV NL
+
+    PV  décalage et aller à l'état 60
+
+
+État 28
+
+   19 figure_att: figure • FLECHE attributs liste_fleche PV
+   20           | figure • OUVRE_ACCOLADE NL attributs PV liste_acc FERME_ACCOLADE
+   21           | figure • PV
+
+    FLECHE          décalage et aller à l'état 61
+    OUVRE_ACCOLADE  décalage et aller à l'état 62
+    PV              décalage et aller à l'état 63
+
+
+État 29
+
+   41 variable: figure_att •
+
+    $défaut  réduction par utilisation de la règle 41 (variable)
+
+
+État 30
+
+    6 instruction: variable • NL
+
+    NL  décalage et aller à l'état 64
+
+
+État 31
+
+   40 variable: fig • '[' NUMBER ']' '.' attributs_variable PV
+   42         | fig • '[' NUMBER ']' PV
+   69 modif: fig • '[' NUMBER ']' '.' critere '=' NUMBER
+   85 ope: fig • '[' NUMBER ']' '.' attributs_variable PV NL
+   87    | fig • '[' NUMBER ']' '.' critere '=' NUMBER PV NL
+
+    '['  décalage et aller à l'état 65
+
+
+État 32
+
+    8 instruction: modif •
+
+    $défaut  réduction par utilisation de la règle 8 (instruction)
+
+
+État 33
+
+    9 expression: ope •
+
+    $défaut  réduction par utilisation de la règle 9 (expression)
+
+
+État 34
+
+    5 instruction: affectation • PV NL
+
+    PV  décalage et aller à l'état 66
+
+
+État 35
+
+  106 expression: operation •
+  112 operation: operation • '+' operation
+  113          | operation • '-' operation
+  114          | operation • '*' operation
+  115          | operation • '/' operation
+
+    '-'  décalage et aller à l'état 67
+    '+'  décalage et aller à l'état 68
+    '*'  décalage et aller à l'état 69
+    '/'  décalage et aller à l'état 70
+
+    '-'      [réduction par utilisation de la règle 106 (expression)]
+    $défaut  réduction par utilisation de la règle 106 (expression)
+
+
+État 36
+
+    2 programme: NL programme •
+
+    $défaut  réduction par utilisation de la règle 2 (programme)
+
+
+État 37
+
+   10 taille: TAILLE NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 71
+
+
+État 38
+
+   12 figure: CARRE NUMBER • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 72
+
+
+État 39
+
+   11 figure: RECTANGLE NUMBER • NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 73
+
+
+État 40
+
+   13 figure: TRIANGLE NUMBER • NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 74
+
+
+État 41
+
+   14 figure: CERCLE NUMBER • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 75
+
+
+État 42
+
+   15 figure: ELLIPSE NUMBER • NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 76
+
+
+État 43
+
+   16 figure: LIGNE NUMBER • NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 77
+
+
+État 44
+
+   26 coordonnees: NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 78
+
+
+État 45
+
+   17 figure: CHEMIN coordonnees •
+   27 coordonnees: coordonnees • V NUMBER NUMBER
+
+    V  décalage et aller à l'état 79
+
+    $défaut  réduction par utilisation de la règle 17 (figure)
+
+
+État 46
+
+   18 figure: TEXTE NUMBER • NUMBER CHAINE CHAINE
+
+    NUMBER  décalage et aller à l'état 80
+
+
+État 47
+
+   46 variable: COULEUR IDENT • '=' color PV
+
+    '='  décalage et aller à l'état 81
+
+
+État 48
+
+  100 comparaison: '(' • predicat ETLOG comparaison ')'
+  101            | '(' • predicat OU comparaison ')'
+  102 predicat: '(' • IDENT '.' critere SIGNE NUMBER ')'
+  103         | '(' • IDENT '.' COULEUR IS color ')'
+  104         | '(' • fig '[' NUMBER ']' '.' critere SIGNE NUMBER ')'
+  105         | '(' • fig '[' NUMBER ']' '.' COULEUR IS color ')'
+
+    CARRE      décalage et aller à l'état 82
+    RECTANGLE  décalage et aller à l'état 83
+    TRIANGLE   décalage et aller à l'état 84
+    CERCLE     décalage et aller à l'état 85
+    ELLIPSE    décalage et aller à l'état 86
+    LIGNE      décalage et aller à l'état 87
+    CHEMIN     décalage et aller à l'état 88
+    TEXTE      décalage et aller à l'état 89
+    IDENT      décalage et aller à l'état 90
+    '('        décalage et aller à l'état 91
+
+    fig       aller à l'état 92
+    predicat  aller à l'état 93
+
+
+État 49
+
+   83 ope: SI comparaison • ALORS OUVRE_ACCOLADE NL ope FERME_ACCOLADE NL suite
+
+    ALORS  décalage et aller à l'état 94
+
+
+État 50
+
+   99 comparaison: predicat •
+
+    $défaut  réduction par utilisation de la règle 99 (comparaison)
+
+
+État 51
+
+   45 variable: BOOLEEN IDENT • '=' BOOL PV
+
+    '='  décalage et aller à l'état 95
+
+
+État 52
+
+   43 variable: ENT IDENT • '=' NUMBER PV
+
+    '='  décalage et aller à l'état 96
+
+
+État 53
+
+   44 variable: REEL IDENT • '=' DOUBLE PV
+
+    '='  décalage et aller à l'état 97
+
+
+État 54
+
+   38 variable: IDENT '=' • figure_att
+
+    CARRE      décalage et aller à l'état 98
+    RECTANGLE  décalage et aller à l'état 99
+    TRIANGLE   décalage et aller à l'état 100
+    CERCLE     décalage et aller à l'état 101
+    ELLIPSE    décalage et aller à l'état 102
+    LIGNE      décalage et aller à l'état 103
+    CHEMIN     décalage et aller à l'état 104
+    TEXTE      décalage et aller à l'état 105
+
+    figure      aller à l'état 28
+    figure_att  aller à l'état 106
+
+
+État 55
+
+   39 variable: IDENT '.' • attributs_variable PV
+   70 modif: IDENT '.' • critere '=' NUMBER
+   84 ope: IDENT '.' • attributs_variable PV NL
+   86    | IDENT '.' • critere '=' NUMBER PV NL
+
+    TAILLE       décalage et aller à l'état 107
+    COULEUR      décalage et aller à l'état 108
+    ROTATION     décalage et aller à l'état 109
+    REMPLISSAGE  décalage et aller à l'état 110
+    OPACITE      décalage et aller à l'état 111
+    EPAISSEUR    décalage et aller à l'état 112
+    X            décalage et aller à l'état 113
+    Y            décalage et aller à l'état 114
+    X1           décalage et aller à l'état 115
+    Y1           décalage et aller à l'état 116
+    X2           décalage et aller à l'état 117
+    Y2           décalage et aller à l'état 118
+    X3           décalage et aller à l'état 119
+    Y3           décalage et aller à l'état 120
+    X4           décalage et aller à l'état 121
+    Y4           décalage et aller à l'état 122
+    HAUTEUR      décalage et aller à l'état 123
+    LARGEUR      décalage et aller à l'état 124
+    RAY          décalage et aller à l'état 125
+
+    attributs_variable  aller à l'état 126
+    critere             aller à l'état 127
+
+
+État 56
+
+  112 operation: operation • '+' operation
+  113          | operation • '-' operation
+  114          | operation • '*' operation
+  115          | operation • '/' operation
+  116          | '-' operation •
+
+    $défaut  réduction par utilisation de la règle 116 (operation)
+
+
+État 57
+
+  111 operation: '(' operation • ')'
+  112          | operation • '+' operation
+  113          | operation • '-' operation
+  114          | operation • '*' operation
+  115          | operation • '/' operation
+
+    '-'  décalage et aller à l'état 67
+    '+'  décalage et aller à l'état 68
+    '*'  décalage et aller à l'état 69
+    '/'  décalage et aller à l'état 70
+    ')'  décalage et aller à l'état 128
+
+
+État 58
+
+    0 $accept: programme $end •
+
+    $défaut  accepter
+
+
+État 59
+
+    1 programme: instruction programme •
+
+    $défaut  réduction par utilisation de la règle 1 (programme)
+
+
+État 60
+
+    7 instruction: taille PV • NL
+
+    NL  décalage et aller à l'état 129
+
+
+État 61
+
+   19 figure_att: figure FLECHE • attributs liste_fleche PV
+
+    COULEUR      décalage et aller à l'état 130
+    ROTATION     décalage et aller à l'état 131
+    REMPLISSAGE  décalage et aller à l'état 132
+    OPACITE      décalage et aller à l'état 133
+    EPAISSEUR    décalage et aller à l'état 134
+
+    attributs  aller à l'état 135
+
+
+État 62
+
+   20 figure_att: figure OUVRE_ACCOLADE • NL attributs PV liste_acc FERME_ACCOLADE
+
+    NL  décalage et aller à l'état 136
+
+
+État 63
+
+   21 figure_att: figure PV •
+
+    $défaut  réduction par utilisation de la règle 21 (figure_att)
+
+
+État 64
+
+    6 instruction: variable NL •
+
+    $défaut  réduction par utilisation de la règle 6 (instruction)
+
+
+État 65
+
+   40 variable: fig '[' • NUMBER ']' '.' attributs_variable PV
+   42         | fig '[' • NUMBER ']' PV
+   69 modif: fig '[' • NUMBER ']' '.' critere '=' NUMBER
+   85 ope: fig '[' • NUMBER ']' '.' attributs_variable PV NL
+   87    | fig '[' • NUMBER ']' '.' critere '=' NUMBER PV NL
+
+    NUMBER  décalage et aller à l'état 137
+
+
+État 66
+
+    5 instruction: affectation PV • NL
+
+    NL  décalage et aller à l'état 138
+
+
+État 67
+
+  113 operation: operation '-' • operation
+
+    NUMBER  décalage et aller à l'état 3
+    BOOL    décalage et aller à l'état 18
+    DOUBLE  décalage et aller à l'état 19
+    '-'     décalage et aller à l'état 21
+    '('     décalage et aller à l'état 23
+
+    operation  aller à l'état 139
+
+
+État 68
+
+  112 operation: operation '+' • operation
+
+    NUMBER  décalage et aller à l'état 3
+    BOOL    décalage et aller à l'état 18
+    DOUBLE  décalage et aller à l'état 19
+    '-'     décalage et aller à l'état 21
+    '('     décalage et aller à l'état 23
+
+    operation  aller à l'état 140
+
+
+État 69
+
+  114 operation: operation '*' • operation
+
+    NUMBER  décalage et aller à l'état 3
+    BOOL    décalage et aller à l'état 18
+    DOUBLE  décalage et aller à l'état 19
+    '-'     décalage et aller à l'état 21
+    '('     décalage et aller à l'état 23
+
+    operation  aller à l'état 141
+
+
+État 70
+
+  115 operation: operation '/' • operation
+
+    NUMBER  décalage et aller à l'état 3
+    BOOL    décalage et aller à l'état 18
+    DOUBLE  décalage et aller à l'état 19
+    '-'     décalage et aller à l'état 21
+    '('     décalage et aller à l'état 23
+
+    operation  aller à l'état 142
+
+
+État 71
+
+   10 taille: TAILLE NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 10 (taille)
+
+
+État 72
+
+   12 figure: CARRE NUMBER NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 143
+
+
+État 73
+
+   11 figure: RECTANGLE NUMBER NUMBER • NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 144
+
+
+État 74
+
+   13 figure: TRIANGLE NUMBER NUMBER • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 145
+
+
+État 75
+
+   14 figure: CERCLE NUMBER NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 146
+
+
+État 76
+
+   15 figure: ELLIPSE NUMBER NUMBER • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 147
+
+
+État 77
+
+   16 figure: LIGNE NUMBER NUMBER • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 148
+
+
+État 78
+
+   26 coordonnees: NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 26 (coordonnees)
+
+
+État 79
+
+   27 coordonnees: coordonnees V • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 149
+
+
+État 80
+
+   18 figure: TEXTE NUMBER NUMBER • CHAINE CHAINE
+
+    CHAINE  décalage et aller à l'état 150
+
+
+État 81
+
+   46 variable: COULEUR IDENT '=' • color PV
+
+    rouge    décalage et aller à l'état 151
+    vert     décalage et aller à l'état 152
+    bleu     décalage et aller à l'état 153
+    jaune    décalage et aller à l'état 154
+    violet   décalage et aller à l'état 155
+    magenta  décalage et aller à l'état 156
+    cyan     décalage et aller à l'état 157
+    noir     décalage et aller à l'état 158
+    blanc    décalage et aller à l'état 159
+    NOM_HEX  décalage et aller à l'état 160
+    NOM_RGB  décalage et aller à l'état 161
+
+    color  aller à l'état 162
+    coul   aller à l'état 163
+
+
+État 82
+
+   48 fig: CARRE •
+
+    $défaut  réduction par utilisation de la règle 48 (fig)
+
+
+État 83
+
+   47 fig: RECTANGLE •
+
+    $défaut  réduction par utilisation de la règle 47 (fig)
+
+
+État 84
+
+   49 fig: TRIANGLE •
+
+    $défaut  réduction par utilisation de la règle 49 (fig)
+
+
+État 85
+
+   50 fig: CERCLE •
+
+    $défaut  réduction par utilisation de la règle 50 (fig)
+
+
+État 86
+
+   51 fig: ELLIPSE •
+
+    $défaut  réduction par utilisation de la règle 51 (fig)
+
+
+État 87
+
+   52 fig: LIGNE •
+
+    $défaut  réduction par utilisation de la règle 52 (fig)
+
+
+État 88
+
+   53 fig: CHEMIN •
+
+    $défaut  réduction par utilisation de la règle 53 (fig)
+
+
+État 89
+
+   54 fig: TEXTE •
+
+    $défaut  réduction par utilisation de la règle 54 (fig)
+
+
+État 90
+
+  102 predicat: '(' IDENT • '.' critere SIGNE NUMBER ')'
+  103         | '(' IDENT • '.' COULEUR IS color ')'
+
+    '.'  décalage et aller à l'état 164
+
+
+État 91
+
+  102 predicat: '(' • IDENT '.' critere SIGNE NUMBER ')'
+  103         | '(' • IDENT '.' COULEUR IS color ')'
+  104         | '(' • fig '[' NUMBER ']' '.' critere SIGNE NUMBER ')'
+  105         | '(' • fig '[' NUMBER ']' '.' COULEUR IS color ')'
+
+    CARRE      décalage et aller à l'état 82
+    RECTANGLE  décalage et aller à l'état 83
+    TRIANGLE   décalage et aller à l'état 84
+    CERCLE     décalage et aller à l'état 85
+    ELLIPSE    décalage et aller à l'état 86
+    LIGNE      décalage et aller à l'état 87
+    CHEMIN     décalage et aller à l'état 88
+    TEXTE      décalage et aller à l'état 89
+    IDENT      décalage et aller à l'état 90
+
+    fig  aller à l'état 92
+
+
+État 92
+
+  104 predicat: '(' fig • '[' NUMBER ']' '.' critere SIGNE NUMBER ')'
+  105         | '(' fig • '[' NUMBER ']' '.' COULEUR IS color ')'
+
+    '['  décalage et aller à l'état 165
+
+
+État 93
+
+  100 comparaison: '(' predicat • ETLOG comparaison ')'
+  101            | '(' predicat • OU comparaison ')'
+
+    ETLOG  décalage et aller à l'état 166
+    OU     décalage et aller à l'état 167
+
+
+État 94
+
+   83 ope: SI comparaison ALORS • OUVRE_ACCOLADE NL ope FERME_ACCOLADE NL suite
+
+    OUVRE_ACCOLADE  décalage et aller à l'état 168
+
+
+État 95
+
+   45 variable: BOOLEEN IDENT '=' • BOOL PV
+
+    BOOL  décalage et aller à l'état 169
+
+
+État 96
+
+   43 variable: ENT IDENT '=' • NUMBER PV
+
+    NUMBER  décalage et aller à l'état 170
+
+
+État 97
+
+   44 variable: REEL IDENT '=' • DOUBLE PV
+
+    DOUBLE  décalage et aller à l'état 171
+
+
+État 98
+
+   12 figure: CARRE • NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 38
+
+
+État 99
+
+   11 figure: RECTANGLE • NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 39
+
+
+État 100
+
+   13 figure: TRIANGLE • NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 40
+
+
+État 101
+
+   14 figure: CERCLE • NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 41
+
+
+État 102
+
+   15 figure: ELLIPSE • NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 42
+
+
+État 103
+
+   16 figure: LIGNE • NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 43
+
+
+État 104
+
+   17 figure: CHEMIN • coordonnees
+
+    NUMBER  décalage et aller à l'état 44
+
+    coordonnees  aller à l'état 45
+
+
+État 105
+
+   18 figure: TEXTE • NUMBER NUMBER CHAINE CHAINE
+
+    NUMBER  décalage et aller à l'état 46
+
+
+État 106
+
+   38 variable: IDENT '=' figure_att •
+
+    $défaut  réduction par utilisation de la règle 38 (variable)
+
+
+État 107
+
+   63 critere: TAILLE •
+
+    $défaut  réduction par utilisation de la règle 63 (critere)
+
+
+État 108
+
+   33 attributs_variable: COULEUR • '=' color
+
+    '='  décalage et aller à l'état 172
+
+
+État 109
+
+   34 attributs_variable: ROTATION • '=' NUMBER
+
+    '='  décalage et aller à l'état 173
+
+
+État 110
+
+   35 attributs_variable: REMPLISSAGE • '=' color
+
+    '='  décalage et aller à l'état 174
+
+
+État 111
+
+   36 attributs_variable: OPACITE • '=' NUMBER
+
+    '='  décalage et aller à l'état 175
+
+
+État 112
+
+   37 attributs_variable: EPAISSEUR • '=' NUMBER
+
+    '='  décalage et aller à l'état 176
+
+
+État 113
+
+   64 critere: X •
+
+    $défaut  réduction par utilisation de la règle 64 (critere)
+
+
+État 114
+
+   65 critere: Y •
+
+    $défaut  réduction par utilisation de la règle 65 (critere)
+
+
+État 115
+
+   55 critere: X1 •
+
+    $défaut  réduction par utilisation de la règle 55 (critere)
+
+
+État 116
+
+   56 critere: Y1 •
+
+    $défaut  réduction par utilisation de la règle 56 (critere)
+
+
+État 117
+
+   57 critere: X2 •
+
+    $défaut  réduction par utilisation de la règle 57 (critere)
+
+
+État 118
+
+   58 critere: Y2 •
+
+    $défaut  réduction par utilisation de la règle 58 (critere)
+
+
+État 119
+
+   59 critere: X3 •
+
+    $défaut  réduction par utilisation de la règle 59 (critere)
+
+
+État 120
+
+   60 critere: Y3 •
+
+    $défaut  réduction par utilisation de la règle 60 (critere)
+
+
+État 121
+
+   61 critere: X4 •
+
+    $défaut  réduction par utilisation de la règle 61 (critere)
+
+
+État 122
+
+   62 critere: Y4 •
+
+    $défaut  réduction par utilisation de la règle 62 (critere)
+
+
+État 123
+
+   67 critere: HAUTEUR •
+
+    $défaut  réduction par utilisation de la règle 67 (critere)
+
+
+État 124
+
+   66 critere: LARGEUR •
+
+    $défaut  réduction par utilisation de la règle 66 (critere)
+
+
+État 125
+
+   68 critere: RAY •
+
+    $défaut  réduction par utilisation de la règle 68 (critere)
+
+
+État 126
+
+   39 variable: IDENT '.' attributs_variable • PV
+   84 ope: IDENT '.' attributs_variable • PV NL
+
+    PV  décalage et aller à l'état 177
+
+
+État 127
+
+   70 modif: IDENT '.' critere • '=' NUMBER
+   86 ope: IDENT '.' critere • '=' NUMBER PV NL
+
+    '='  décalage et aller à l'état 178
+
+
+État 128
+
+  111 operation: '(' operation ')' •
+
+    $défaut  réduction par utilisation de la règle 111 (operation)
+
+
+État 129
+
+    7 instruction: taille PV NL •
+
+    $défaut  réduction par utilisation de la règle 7 (instruction)
+
+
+État 130
+
+   28 attributs: COULEUR • DP color
+
+    DP  décalage et aller à l'état 179
+
+
+État 131
+
+   29 attributs: ROTATION • DP NUMBER
+
+    DP  décalage et aller à l'état 180
+
+
+État 132
+
+   30 attributs: REMPLISSAGE • DP color
+
+    DP  décalage et aller à l'état 181
+
+
+État 133
+
+   31 attributs: OPACITE • DP NUMBER
+
+    DP  décalage et aller à l'état 182
+
+
+État 134
+
+   32 attributs: EPAISSEUR • DP NUMBER
+
+    DP  décalage et aller à l'état 183
+
+
+État 135
+
+   19 figure_att: figure FLECHE attributs • liste_fleche PV
+
+    ET  décalage et aller à l'état 184
+
+    $défaut  réduction par utilisation de la règle 23 (liste_fleche)
+
+    liste_fleche  aller à l'état 185
+
+
+État 136
+
+   20 figure_att: figure OUVRE_ACCOLADE NL • attributs PV liste_acc FERME_ACCOLADE
+
+    COULEUR      décalage et aller à l'état 130
+    ROTATION     décalage et aller à l'état 131
+    REMPLISSAGE  décalage et aller à l'état 132
+    OPACITE      décalage et aller à l'état 133
+    EPAISSEUR    décalage et aller à l'état 134
+
+    attributs  aller à l'état 186
+
+
+État 137
+
+   40 variable: fig '[' NUMBER • ']' '.' attributs_variable PV
+   42         | fig '[' NUMBER • ']' PV
+   69 modif: fig '[' NUMBER • ']' '.' critere '=' NUMBER
+   85 ope: fig '[' NUMBER • ']' '.' attributs_variable PV NL
+   87    | fig '[' NUMBER • ']' '.' critere '=' NUMBER PV NL
+
+    ']'  décalage et aller à l'état 187
+
+
+État 138
+
+    5 instruction: affectation PV NL •
+
+    $défaut  réduction par utilisation de la règle 5 (instruction)
+
+
+État 139
+
+  112 operation: operation • '+' operation
+  113          | operation • '-' operation
+  113          | operation '-' operation •
+  114          | operation • '*' operation
+  115          | operation • '/' operation
+
+    '*'  décalage et aller à l'état 69
+    '/'  décalage et aller à l'état 70
+
+    $défaut  réduction par utilisation de la règle 113 (operation)
+
+
+État 140
+
+  112 operation: operation • '+' operation
+  112          | operation '+' operation •
+  113          | operation • '-' operation
+  114          | operation • '*' operation
+  115          | operation • '/' operation
+
+    '*'  décalage et aller à l'état 69
+    '/'  décalage et aller à l'état 70
+
+    $défaut  réduction par utilisation de la règle 112 (operation)
+
+
+État 141
+
+  112 operation: operation • '+' operation
+  113          | operation • '-' operation
+  114          | operation • '*' operation
+  114          | operation '*' operation •
+  115          | operation • '/' operation
+
+    $défaut  réduction par utilisation de la règle 114 (operation)
+
+
+État 142
+
+  112 operation: operation • '+' operation
+  113          | operation • '-' operation
+  114          | operation • '*' operation
+  115          | operation • '/' operation
+  115          | operation '/' operation •
+
+    $défaut  réduction par utilisation de la règle 115 (operation)
+
+
+État 143
+
+   12 figure: CARRE NUMBER NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 12 (figure)
+
+
+État 144
+
+   11 figure: RECTANGLE NUMBER NUMBER NUMBER • NUMBER NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 188
+
+
+État 145
+
+   13 figure: TRIANGLE NUMBER NUMBER NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 189
+
+
+État 146
+
+   14 figure: CERCLE NUMBER NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 14 (figure)
+
+
+État 147
+
+   15 figure: ELLIPSE NUMBER NUMBER NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 190
+
+
+État 148
+
+   16 figure: LIGNE NUMBER NUMBER NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 191
+
+
+État 149
+
+   27 coordonnees: coordonnees V NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 192
+
+
+État 150
+
+   18 figure: TEXTE NUMBER NUMBER CHAINE • CHAINE
+
+    CHAINE  décalage et aller à l'état 193
+
+
+État 151
+
+   74 coul: rouge •
+
+    $défaut  réduction par utilisation de la règle 74 (coul)
+
+
+État 152
+
+   75 coul: vert •
+
+    $défaut  réduction par utilisation de la règle 75 (coul)
+
+
+État 153
+
+   76 coul: bleu •
+
+    $défaut  réduction par utilisation de la règle 76 (coul)
+
+
+État 154
+
+   77 coul: jaune •
+
+    $défaut  réduction par utilisation de la règle 77 (coul)
+
+
+État 155
+
+   78 coul: violet •
+
+    $défaut  réduction par utilisation de la règle 78 (coul)
+
+
+État 156
+
+   79 coul: magenta •
+
+    $défaut  réduction par utilisation de la règle 79 (coul)
+
+
+État 157
+
+   80 coul: cyan •
+
+    $défaut  réduction par utilisation de la règle 80 (coul)
+
+
+État 158
+
+   81 coul: noir •
+
+    $défaut  réduction par utilisation de la règle 81 (coul)
+
+
+État 159
+
+   82 coul: blanc •
+
+    $défaut  réduction par utilisation de la règle 82 (coul)
+
+
+État 160
+
+   72 color: NOM_HEX •
+
+    $défaut  réduction par utilisation de la règle 72 (color)
+
+
+État 161
+
+   73 color: NOM_RGB •
+
+    $défaut  réduction par utilisation de la règle 73 (color)
+
+
+État 162
+
+   46 variable: COULEUR IDENT '=' color • PV
+
+    PV  décalage et aller à l'état 194
+
+
+État 163
+
+   71 color: coul •
+
+    $défaut  réduction par utilisation de la règle 71 (color)
+
+
+État 164
+
+  102 predicat: '(' IDENT '.' • critere SIGNE NUMBER ')'
+  103         | '(' IDENT '.' • COULEUR IS color ')'
+
+    TAILLE   décalage et aller à l'état 107
+    COULEUR  décalage et aller à l'état 195
+    X        décalage et aller à l'état 113
+    Y        décalage et aller à l'état 114
+    X1       décalage et aller à l'état 115
+    Y1       décalage et aller à l'état 116
+    X2       décalage et aller à l'état 117
+    Y2       décalage et aller à l'état 118
+    X3       décalage et aller à l'état 119
+    Y3       décalage et aller à l'état 120
+    X4       décalage et aller à l'état 121
+    Y4       décalage et aller à l'état 122
+    HAUTEUR  décalage et aller à l'état 123
+    LARGEUR  décalage et aller à l'état 124
+    RAY      décalage et aller à l'état 125
+
+    critere  aller à l'état 196
+
+
+État 165
+
+  104 predicat: '(' fig '[' • NUMBER ']' '.' critere SIGNE NUMBER ')'
+  105         | '(' fig '[' • NUMBER ']' '.' COULEUR IS color ')'
+
+    NUMBER  décalage et aller à l'état 197
+
+
+État 166
+
+  100 comparaison: '(' predicat ETLOG • comparaison ')'
+
+    '('  décalage et aller à l'état 48
+
+    comparaison  aller à l'état 198
+    predicat     aller à l'état 50
+
+
+État 167
+
+  101 comparaison: '(' predicat OU • comparaison ')'
+
+    '('  décalage et aller à l'état 48
+
+    comparaison  aller à l'état 199
+    predicat     aller à l'état 50
+
+
+État 168
+
+   83 ope: SI comparaison ALORS OUVRE_ACCOLADE • NL ope FERME_ACCOLADE NL suite
+
+    NL  décalage et aller à l'état 200
+
+
+État 169
+
+   45 variable: BOOLEEN IDENT '=' BOOL • PV
+
+    PV  décalage et aller à l'état 201
+
+
+État 170
+
+   43 variable: ENT IDENT '=' NUMBER • PV
+
+    PV  décalage et aller à l'état 202
+
+
+État 171
+
+   44 variable: REEL IDENT '=' DOUBLE • PV
+
+    PV  décalage et aller à l'état 203
+
+
+État 172
+
+   33 attributs_variable: COULEUR '=' • color
+
+    rouge    décalage et aller à l'état 151
+    vert     décalage et aller à l'état 152
+    bleu     décalage et aller à l'état 153
+    jaune    décalage et aller à l'état 154
+    violet   décalage et aller à l'état 155
+    magenta  décalage et aller à l'état 156
+    cyan     décalage et aller à l'état 157
+    noir     décalage et aller à l'état 158
+    blanc    décalage et aller à l'état 159
+    NOM_HEX  décalage et aller à l'état 160
+    NOM_RGB  décalage et aller à l'état 161
+
+    color  aller à l'état 204
+    coul   aller à l'état 163
+
+
+État 173
+
+   34 attributs_variable: ROTATION '=' • NUMBER
+
+    NUMBER  décalage et aller à l'état 205
+
+
+État 174
+
+   35 attributs_variable: REMPLISSAGE '=' • color
+
+    rouge    décalage et aller à l'état 151
+    vert     décalage et aller à l'état 152
+    bleu     décalage et aller à l'état 153
+    jaune    décalage et aller à l'état 154
+    violet   décalage et aller à l'état 155
+    magenta  décalage et aller à l'état 156
+    cyan     décalage et aller à l'état 157
+    noir     décalage et aller à l'état 158
+    blanc    décalage et aller à l'état 159
+    NOM_HEX  décalage et aller à l'état 160
+    NOM_RGB  décalage et aller à l'état 161
+
+    color  aller à l'état 206
+    coul   aller à l'état 163
+
+
+État 175
+
+   36 attributs_variable: OPACITE '=' • NUMBER
+
+    NUMBER  décalage et aller à l'état 207
+
+
+État 176
+
+   37 attributs_variable: EPAISSEUR '=' • NUMBER
+
+    NUMBER  décalage et aller à l'état 208
+
+
+État 177
+
+   39 variable: IDENT '.' attributs_variable PV •
+   84 ope: IDENT '.' attributs_variable PV • NL
+
+    NL  décalage et aller à l'état 209
+
+    NL  [réduction par utilisation de la règle 39 (variable)]
+
+
+État 178
+
+   70 modif: IDENT '.' critere '=' • NUMBER
+   86 ope: IDENT '.' critere '=' • NUMBER PV NL
+
+    NUMBER  décalage et aller à l'état 210
+
+
+État 179
+
+   28 attributs: COULEUR DP • color
+
+    rouge    décalage et aller à l'état 151
+    vert     décalage et aller à l'état 152
+    bleu     décalage et aller à l'état 153
+    jaune    décalage et aller à l'état 154
+    violet   décalage et aller à l'état 155
+    magenta  décalage et aller à l'état 156
+    cyan     décalage et aller à l'état 157
+    noir     décalage et aller à l'état 158
+    blanc    décalage et aller à l'état 159
+    NOM_HEX  décalage et aller à l'état 160
+    NOM_RGB  décalage et aller à l'état 161
+
+    color  aller à l'état 211
+    coul   aller à l'état 163
+
+
+État 180
+
+   29 attributs: ROTATION DP • NUMBER
+
+    NUMBER  décalage et aller à l'état 212
+
+
+État 181
+
+   30 attributs: REMPLISSAGE DP • color
+
+    rouge    décalage et aller à l'état 151
+    vert     décalage et aller à l'état 152
+    bleu     décalage et aller à l'état 153
+    jaune    décalage et aller à l'état 154
+    violet   décalage et aller à l'état 155
+    magenta  décalage et aller à l'état 156
+    cyan     décalage et aller à l'état 157
+    noir     décalage et aller à l'état 158
+    blanc    décalage et aller à l'état 159
+    NOM_HEX  décalage et aller à l'état 160
+    NOM_RGB  décalage et aller à l'état 161
+
+    color  aller à l'état 213
+    coul   aller à l'état 163
+
+
+État 182
+
+   31 attributs: OPACITE DP • NUMBER
+
+    NUMBER  décalage et aller à l'état 214
+
+
+État 183
+
+   32 attributs: EPAISSEUR DP • NUMBER
+
+    NUMBER  décalage et aller à l'état 215
+
+
+État 184
+
+   22 liste_fleche: ET • attributs liste_fleche
+
+    COULEUR      décalage et aller à l'état 130
+    ROTATION     décalage et aller à l'état 131
+    REMPLISSAGE  décalage et aller à l'état 132
+    OPACITE      décalage et aller à l'état 133
+    EPAISSEUR    décalage et aller à l'état 134
+
+    attributs  aller à l'état 216
+
+
+État 185
+
+   19 figure_att: figure FLECHE attributs liste_fleche • PV
+
+    PV  décalage et aller à l'état 217
+
+
+État 186
+
+   20 figure_att: figure OUVRE_ACCOLADE NL attributs • PV liste_acc FERME_ACCOLADE
+
+    PV  décalage et aller à l'état 218
+
+
+État 187
+
+   40 variable: fig '[' NUMBER ']' • '.' attributs_variable PV
+   42         | fig '[' NUMBER ']' • PV
+   69 modif: fig '[' NUMBER ']' • '.' critere '=' NUMBER
+   85 ope: fig '[' NUMBER ']' • '.' attributs_variable PV NL
+   87    | fig '[' NUMBER ']' • '.' critere '=' NUMBER PV NL
+
+    PV   décalage et aller à l'état 219
+    '.'  décalage et aller à l'état 220
+
+
+État 188
+
+   11 figure: RECTANGLE NUMBER NUMBER NUMBER NUMBER • NUMBER NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 221
+
+
+État 189
+
+   13 figure: TRIANGLE NUMBER NUMBER NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 13 (figure)
+
+
+État 190
+
+   15 figure: ELLIPSE NUMBER NUMBER NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 15 (figure)
+
+
+État 191
+
+   16 figure: LIGNE NUMBER NUMBER NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 16 (figure)
+
+
+État 192
+
+   27 coordonnees: coordonnees V NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 27 (coordonnees)
+
+
+État 193
+
+   18 figure: TEXTE NUMBER NUMBER CHAINE CHAINE •
+
+    $défaut  réduction par utilisation de la règle 18 (figure)
+
+
+État 194
+
+   46 variable: COULEUR IDENT '=' color PV •
+
+    $défaut  réduction par utilisation de la règle 46 (variable)
+
+
+État 195
+
+  103 predicat: '(' IDENT '.' COULEUR • IS color ')'
+
+    ESTPAS  décalage et aller à l'état 222
+    EST     décalage et aller à l'état 223
+
+    IS  aller à l'état 224
+
+
+État 196
+
+  102 predicat: '(' IDENT '.' critere • SIGNE NUMBER ')'
+
+    L   décalage et aller à l'état 225
+    LE  décalage et aller à l'état 226
+    G   décalage et aller à l'état 227
+    GE  décalage et aller à l'état 228
+    E   décalage et aller à l'état 229
+    NE  décalage et aller à l'état 230
+
+    SIGNE  aller à l'état 231
+
+
+État 197
+
+  104 predicat: '(' fig '[' NUMBER • ']' '.' critere SIGNE NUMBER ')'
+  105         | '(' fig '[' NUMBER • ']' '.' COULEUR IS color ')'
+
+    ']'  décalage et aller à l'état 232
+
+
+État 198
+
+  100 comparaison: '(' predicat ETLOG comparaison • ')'
+
+    ')'  décalage et aller à l'état 233
+
+
+État 199
+
+  101 comparaison: '(' predicat OU comparaison • ')'
+
+    ')'  décalage et aller à l'état 234
+
+
+État 200
+
+   83 ope: SI comparaison ALORS OUVRE_ACCOLADE NL • ope FERME_ACCOLADE NL suite
+
+    CARRE      décalage et aller à l'état 82
+    RECTANGLE  décalage et aller à l'état 83
+    TRIANGLE   décalage et aller à l'état 84
+    CERCLE     décalage et aller à l'état 85
+    ELLIPSE    décalage et aller à l'état 86
+    LIGNE      décalage et aller à l'état 87
+    CHEMIN     décalage et aller à l'état 88
+    TEXTE      décalage et aller à l'état 89
+    SI         décalage et aller à l'état 14
+    IDENT      décalage et aller à l'état 235
+
+    $défaut  réduction par utilisation de la règle 88 (ope)
+
+    fig  aller à l'état 236
+    ope  aller à l'état 237
+
+
+État 201
+
+   45 variable: BOOLEEN IDENT '=' BOOL PV •
+
+    $défaut  réduction par utilisation de la règle 45 (variable)
+
+
+État 202
+
+   43 variable: ENT IDENT '=' NUMBER PV •
+
+    $défaut  réduction par utilisation de la règle 43 (variable)
+
+
+État 203
+
+   44 variable: REEL IDENT '=' DOUBLE PV •
+
+    $défaut  réduction par utilisation de la règle 44 (variable)
+
+
+État 204
+
+   33 attributs_variable: COULEUR '=' color •
+
+    $défaut  réduction par utilisation de la règle 33 (attributs_variable)
+
+
+État 205
+
+   34 attributs_variable: ROTATION '=' NUMBER •
+
+    $défaut  réduction par utilisation de la règle 34 (attributs_variable)
+
+
+État 206
+
+   35 attributs_variable: REMPLISSAGE '=' color •
+
+    $défaut  réduction par utilisation de la règle 35 (attributs_variable)
+
+
+État 207
+
+   36 attributs_variable: OPACITE '=' NUMBER •
+
+    $défaut  réduction par utilisation de la règle 36 (attributs_variable)
+
+
+État 208
+
+   37 attributs_variable: EPAISSEUR '=' NUMBER •
+
+    $défaut  réduction par utilisation de la règle 37 (attributs_variable)
+
+
+État 209
+
+   84 ope: IDENT '.' attributs_variable PV NL •
+
+    $défaut  réduction par utilisation de la règle 84 (ope)
+
+
+État 210
+
+   70 modif: IDENT '.' critere '=' NUMBER •
+   86 ope: IDENT '.' critere '=' NUMBER • PV NL
+
+    PV  décalage et aller à l'état 238
+
+    $défaut  réduction par utilisation de la règle 70 (modif)
+
+
+État 211
+
+   28 attributs: COULEUR DP color •
+
+    $défaut  réduction par utilisation de la règle 28 (attributs)
+
+
+État 212
+
+   29 attributs: ROTATION DP NUMBER •
+
+    $défaut  réduction par utilisation de la règle 29 (attributs)
+
+
+État 213
+
+   30 attributs: REMPLISSAGE DP color •
+
+    $défaut  réduction par utilisation de la règle 30 (attributs)
+
+
+État 214
+
+   31 attributs: OPACITE DP NUMBER •
+
+    $défaut  réduction par utilisation de la règle 31 (attributs)
+
+
+État 215
+
+   32 attributs: EPAISSEUR DP NUMBER •
+
+    $défaut  réduction par utilisation de la règle 32 (attributs)
+
+
+État 216
+
+   22 liste_fleche: ET attributs • liste_fleche
+
+    ET  décalage et aller à l'état 184
+
+    $défaut  réduction par utilisation de la règle 23 (liste_fleche)
+
+    liste_fleche  aller à l'état 239
+
+
+État 217
+
+   19 figure_att: figure FLECHE attributs liste_fleche PV •
+
+    $défaut  réduction par utilisation de la règle 19 (figure_att)
+
+
+État 218
+
+   20 figure_att: figure OUVRE_ACCOLADE NL attributs PV • liste_acc FERME_ACCOLADE
+
+    NL  décalage et aller à l'état 240
+
+    $défaut  réduction par utilisation de la règle 25 (liste_acc)
+
+    liste_acc  aller à l'état 241
+
+
+État 219
+
+   42 variable: fig '[' NUMBER ']' PV •
+
+    $défaut  réduction par utilisation de la règle 42 (variable)
+
+
+État 220
+
+   40 variable: fig '[' NUMBER ']' '.' • attributs_variable PV
+   69 modif: fig '[' NUMBER ']' '.' • critere '=' NUMBER
+   85 ope: fig '[' NUMBER ']' '.' • attributs_variable PV NL
+   87    | fig '[' NUMBER ']' '.' • critere '=' NUMBER PV NL
+
+    TAILLE       décalage et aller à l'état 107
+    COULEUR      décalage et aller à l'état 108
+    ROTATION     décalage et aller à l'état 109
+    REMPLISSAGE  décalage et aller à l'état 110
+    OPACITE      décalage et aller à l'état 111
+    EPAISSEUR    décalage et aller à l'état 112
+    X            décalage et aller à l'état 113
+    Y            décalage et aller à l'état 114
+    X1           décalage et aller à l'état 115
+    Y1           décalage et aller à l'état 116
+    X2           décalage et aller à l'état 117
+    Y2           décalage et aller à l'état 118
+    X3           décalage et aller à l'état 119
+    Y3           décalage et aller à l'état 120
+    X4           décalage et aller à l'état 121
+    Y4           décalage et aller à l'état 122
+    HAUTEUR      décalage et aller à l'état 123
+    LARGEUR      décalage et aller à l'état 124
+    RAY          décalage et aller à l'état 125
+
+    attributs_variable  aller à l'état 242
+    critere             aller à l'état 243
+
+
+État 221
+
+   11 figure: RECTANGLE NUMBER NUMBER NUMBER NUMBER NUMBER • NUMBER NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 244
+
+
+État 222
+
+   98 IS: ESTPAS •
+
+    $défaut  réduction par utilisation de la règle 98 (IS)
+
+
+État 223
+
+   97 IS: EST •
+
+    $défaut  réduction par utilisation de la règle 97 (IS)
+
+
+État 224
+
+  103 predicat: '(' IDENT '.' COULEUR IS • color ')'
+
+    rouge    décalage et aller à l'état 151
+    vert     décalage et aller à l'état 152
+    bleu     décalage et aller à l'état 153
+    jaune    décalage et aller à l'état 154
+    violet   décalage et aller à l'état 155
+    magenta  décalage et aller à l'état 156
+    cyan     décalage et aller à l'état 157
+    noir     décalage et aller à l'état 158
+    blanc    décalage et aller à l'état 159
+    NOM_HEX  décalage et aller à l'état 160
+    NOM_RGB  décalage et aller à l'état 161
+
+    color  aller à l'état 245
+    coul   aller à l'état 163
+
+
+État 225
+
+   93 SIGNE: L •
+
+    $défaut  réduction par utilisation de la règle 93 (SIGNE)
+
+
+État 226
+
+   94 SIGNE: LE •
+
+    $défaut  réduction par utilisation de la règle 94 (SIGNE)
+
+
+État 227
+
+   91 SIGNE: G •
+
+    $défaut  réduction par utilisation de la règle 91 (SIGNE)
+
+
+État 228
+
+   92 SIGNE: GE •
+
+    $défaut  réduction par utilisation de la règle 92 (SIGNE)
+
+
+État 229
+
+   95 SIGNE: E •
+
+    $défaut  réduction par utilisation de la règle 95 (SIGNE)
+
+
+État 230
+
+   96 SIGNE: NE •
+
+    $défaut  réduction par utilisation de la règle 96 (SIGNE)
+
+
+État 231
+
+  102 predicat: '(' IDENT '.' critere SIGNE • NUMBER ')'
+
+    NUMBER  décalage et aller à l'état 246
+
+
+État 232
+
+  104 predicat: '(' fig '[' NUMBER ']' • '.' critere SIGNE NUMBER ')'
+  105         | '(' fig '[' NUMBER ']' • '.' COULEUR IS color ')'
+
+    '.'  décalage et aller à l'état 247
+
+
+État 233
+
+  100 comparaison: '(' predicat ETLOG comparaison ')' •
+
+    $défaut  réduction par utilisation de la règle 100 (comparaison)
+
+
+État 234
+
+  101 comparaison: '(' predicat OU comparaison ')' •
+
+    $défaut  réduction par utilisation de la règle 101 (comparaison)
+
+
+État 235
+
+   84 ope: IDENT • '.' attributs_variable PV NL
+   86    | IDENT • '.' critere '=' NUMBER PV NL
+
+    '.'  décalage et aller à l'état 248
+
+
+État 236
+
+   85 ope: fig • '[' NUMBER ']' '.' attributs_variable PV NL
+   87    | fig • '[' NUMBER ']' '.' critere '=' NUMBER PV NL
+
+    '['  décalage et aller à l'état 249
+
+
+État 237
+
+   83 ope: SI comparaison ALORS OUVRE_ACCOLADE NL ope • FERME_ACCOLADE NL suite
+
+    FERME_ACCOLADE  décalage et aller à l'état 250
+
+
+État 238
+
+   86 ope: IDENT '.' critere '=' NUMBER PV • NL
+
+    NL  décalage et aller à l'état 251
+
+
+État 239
+
+   22 liste_fleche: ET attributs liste_fleche •
+
+    $défaut  réduction par utilisation de la règle 22 (liste_fleche)
+
+
+État 240
+
+   24 liste_acc: NL • attributs PV NL liste_acc
+
+    COULEUR      décalage et aller à l'état 130
+    ROTATION     décalage et aller à l'état 131
+    REMPLISSAGE  décalage et aller à l'état 132
+    OPACITE      décalage et aller à l'état 133
+    EPAISSEUR    décalage et aller à l'état 134
+
+    attributs  aller à l'état 252
+
+
+État 241
+
+   20 figure_att: figure OUVRE_ACCOLADE NL attributs PV liste_acc • FERME_ACCOLADE
+
+    FERME_ACCOLADE  décalage et aller à l'état 253
+
+
+État 242
+
+   40 variable: fig '[' NUMBER ']' '.' attributs_variable • PV
+   85 ope: fig '[' NUMBER ']' '.' attributs_variable • PV NL
+
+    PV  décalage et aller à l'état 254
+
+
+État 243
+
+   69 modif: fig '[' NUMBER ']' '.' critere • '=' NUMBER
+   87 ope: fig '[' NUMBER ']' '.' critere • '=' NUMBER PV NL
+
+    '='  décalage et aller à l'état 255
+
+
+État 244
+
+   11 figure: RECTANGLE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER • NUMBER NUMBER
+
+    NUMBER  décalage et aller à l'état 256
+
+
+État 245
+
+  103 predicat: '(' IDENT '.' COULEUR IS color • ')'
+
+    ')'  décalage et aller à l'état 257
+
+
+État 246
+
+  102 predicat: '(' IDENT '.' critere SIGNE NUMBER • ')'
+
+    ')'  décalage et aller à l'état 258
+
+
+État 247
+
+  104 predicat: '(' fig '[' NUMBER ']' '.' • critere SIGNE NUMBER ')'
+  105         | '(' fig '[' NUMBER ']' '.' • COULEUR IS color ')'
+
+    TAILLE   décalage et aller à l'état 107
+    COULEUR  décalage et aller à l'état 259
+    X        décalage et aller à l'état 113
+    Y        décalage et aller à l'état 114
+    X1       décalage et aller à l'état 115
+    Y1       décalage et aller à l'état 116
+    X2       décalage et aller à l'état 117
+    Y2       décalage et aller à l'état 118
+    X3       décalage et aller à l'état 119
+    Y3       décalage et aller à l'état 120
+    X4       décalage et aller à l'état 121
+    Y4       décalage et aller à l'état 122
+    HAUTEUR  décalage et aller à l'état 123
+    LARGEUR  décalage et aller à l'état 124
+    RAY      décalage et aller à l'état 125
+
+    critere  aller à l'état 260
+
+
+État 248
+
+   84 ope: IDENT '.' • attributs_variable PV NL
+   86    | IDENT '.' • critere '=' NUMBER PV NL
+
+    TAILLE       décalage et aller à l'état 107
+    COULEUR      décalage et aller à l'état 108
+    ROTATION     décalage et aller à l'état 109
+    REMPLISSAGE  décalage et aller à l'état 110
+    OPACITE      décalage et aller à l'état 111
+    EPAISSEUR    décalage et aller à l'état 112
+    X            décalage et aller à l'état 113
+    Y            décalage et aller à l'état 114
+    X1           décalage et aller à l'état 115
+    Y1           décalage et aller à l'état 116
+    X2           décalage et aller à l'état 117
+    Y2           décalage et aller à l'état 118
+    X3           décalage et aller à l'état 119
+    Y3           décalage et aller à l'état 120
+    X4           décalage et aller à l'état 121
+    Y4           décalage et aller à l'état 122
+    HAUTEUR      décalage et aller à l'état 123
+    LARGEUR      décalage et aller à l'état 124
+    RAY          décalage et aller à l'état 125
+
+    attributs_variable  aller à l'état 261
+    critere             aller à l'état 262
+
+
+État 249
+
+   85 ope: fig '[' • NUMBER ']' '.' attributs_variable PV NL
+   87    | fig '[' • NUMBER ']' '.' critere '=' NUMBER PV NL
+
+    NUMBER  décalage et aller à l'état 263
+
+
+État 250
+
+   83 ope: SI comparaison ALORS OUVRE_ACCOLADE NL ope FERME_ACCOLADE • NL suite
+
+    NL  décalage et aller à l'état 264
+
+
+État 251
+
+   86 ope: IDENT '.' critere '=' NUMBER PV NL •
+
+    $défaut  réduction par utilisation de la règle 86 (ope)
+
+
+État 252
+
+   24 liste_acc: NL attributs • PV NL liste_acc
+
+    PV  décalage et aller à l'état 265
+
+
+État 253
+
+   20 figure_att: figure OUVRE_ACCOLADE NL attributs PV liste_acc FERME_ACCOLADE •
+
+    $défaut  réduction par utilisation de la règle 20 (figure_att)
+
+
+État 254
+
+   40 variable: fig '[' NUMBER ']' '.' attributs_variable PV •
+   85 ope: fig '[' NUMBER ']' '.' attributs_variable PV • NL
+
+    NL  décalage et aller à l'état 266
+
+    NL  [réduction par utilisation de la règle 40 (variable)]
+
+
+État 255
+
+   69 modif: fig '[' NUMBER ']' '.' critere '=' • NUMBER
+   87 ope: fig '[' NUMBER ']' '.' critere '=' • NUMBER PV NL
+
+    NUMBER  décalage et aller à l'état 267
+
+
+État 256
+
+   11 figure: RECTANGLE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER • NUMBER
+
+    NUMBER  décalage et aller à l'état 268
+
+
+État 257
+
+  103 predicat: '(' IDENT '.' COULEUR IS color ')' •
+
+    $défaut  réduction par utilisation de la règle 103 (predicat)
+
+
+État 258
+
+  102 predicat: '(' IDENT '.' critere SIGNE NUMBER ')' •
+
+    $défaut  réduction par utilisation de la règle 102 (predicat)
+
+
+État 259
+
+  105 predicat: '(' fig '[' NUMBER ']' '.' COULEUR • IS color ')'
+
+    ESTPAS  décalage et aller à l'état 222
+    EST     décalage et aller à l'état 223
+
+    IS  aller à l'état 269
+
+
+État 260
+
+  104 predicat: '(' fig '[' NUMBER ']' '.' critere • SIGNE NUMBER ')'
+
+    L   décalage et aller à l'état 225
+    LE  décalage et aller à l'état 226
+    G   décalage et aller à l'état 227
+    GE  décalage et aller à l'état 228
+    E   décalage et aller à l'état 229
+    NE  décalage et aller à l'état 230
+
+    SIGNE  aller à l'état 270
+
+
+État 261
+
+   84 ope: IDENT '.' attributs_variable • PV NL
+
+    PV  décalage et aller à l'état 271
+
+
+État 262
+
+   86 ope: IDENT '.' critere • '=' NUMBER PV NL
+
+    '='  décalage et aller à l'état 272
+
+
+État 263
+
+   85 ope: fig '[' NUMBER • ']' '.' attributs_variable PV NL
+   87    | fig '[' NUMBER • ']' '.' critere '=' NUMBER PV NL
+
+    ']'  décalage et aller à l'état 273
+
+
+État 264
+
+   83 ope: SI comparaison ALORS OUVRE_ACCOLADE NL ope FERME_ACCOLADE NL • suite
+
+    SINON  décalage et aller à l'état 274
+
+    $défaut  réduction par utilisation de la règle 90 (suite)
+
+    suite  aller à l'état 275
+
+
+État 265
+
+   24 liste_acc: NL attributs PV • NL liste_acc
+
+    NL  décalage et aller à l'état 276
+
+
+État 266
+
+   85 ope: fig '[' NUMBER ']' '.' attributs_variable PV NL •
+
+    $défaut  réduction par utilisation de la règle 85 (ope)
+
+
+État 267
+
+   69 modif: fig '[' NUMBER ']' '.' critere '=' NUMBER •
+   87 ope: fig '[' NUMBER ']' '.' critere '=' NUMBER • PV NL
+
+    PV  décalage et aller à l'état 277
+
+    $défaut  réduction par utilisation de la règle 69 (modif)
+
+
+État 268
+
+   11 figure: RECTANGLE NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER •
+
+    $défaut  réduction par utilisation de la règle 11 (figure)
+
+
+État 269
+
+  105 predicat: '(' fig '[' NUMBER ']' '.' COULEUR IS • color ')'
+
+    rouge    décalage et aller à l'état 151
+    vert     décalage et aller à l'état 152
+    bleu     décalage et aller à l'état 153
+    jaune    décalage et aller à l'état 154
+    violet   décalage et aller à l'état 155
+    magenta  décalage et aller à l'état 156
+    cyan     décalage et aller à l'état 157
+    noir     décalage et aller à l'état 158
+    blanc    décalage et aller à l'état 159
+    NOM_HEX  décalage et aller à l'état 160
+    NOM_RGB  décalage et aller à l'état 161
+
+    color  aller à l'état 278
+    coul   aller à l'état 163
+
+
+État 270
+
+  104 predicat: '(' fig '[' NUMBER ']' '.' critere SIGNE • NUMBER ')'
+
+    NUMBER  décalage et aller à l'état 279
+
+
+État 271
+
+   84 ope: IDENT '.' attributs_variable PV • NL
+
+    NL  décalage et aller à l'état 209
+
+
+État 272
+
+   86 ope: IDENT '.' critere '=' • NUMBER PV NL
+
+    NUMBER  décalage et aller à l'état 280
+
+
+État 273
+
+   85 ope: fig '[' NUMBER ']' • '.' attributs_variable PV NL
+   87    | fig '[' NUMBER ']' • '.' critere '=' NUMBER PV NL
+
+    '.'  décalage et aller à l'état 281
+
+
+État 274
+
+   89 suite: SINON • OUVRE_ACCOLADE NL ope FERME_ACCOLADE
+
+    OUVRE_ACCOLADE  décalage et aller à l'état 282
+
+
+État 275
+
+   83 ope: SI comparaison ALORS OUVRE_ACCOLADE NL ope FERME_ACCOLADE NL suite •
+
+    $défaut  réduction par utilisation de la règle 83 (ope)
+
+
+État 276
+
+   24 liste_acc: NL attributs PV NL • liste_acc
+
+    NL  décalage et aller à l'état 240
+
+    $défaut  réduction par utilisation de la règle 25 (liste_acc)
+
+    liste_acc  aller à l'état 283
+
+
+État 277
+
+   87 ope: fig '[' NUMBER ']' '.' critere '=' NUMBER PV • NL
+
+    NL  décalage et aller à l'état 284
+
+
+État 278
+
+  105 predicat: '(' fig '[' NUMBER ']' '.' COULEUR IS color • ')'
+
+    ')'  décalage et aller à l'état 285
+
+
+État 279
+
+  104 predicat: '(' fig '[' NUMBER ']' '.' critere SIGNE NUMBER • ')'
+
+    ')'  décalage et aller à l'état 286
+
+
+État 280
+
+   86 ope: IDENT '.' critere '=' NUMBER • PV NL
+
+    PV  décalage et aller à l'état 238
+
+
+État 281
+
+   85 ope: fig '[' NUMBER ']' '.' • attributs_variable PV NL
+   87    | fig '[' NUMBER ']' '.' • critere '=' NUMBER PV NL
+
+    TAILLE       décalage et aller à l'état 107
+    COULEUR      décalage et aller à l'état 108
+    ROTATION     décalage et aller à l'état 109
+    REMPLISSAGE  décalage et aller à l'état 110
+    OPACITE      décalage et aller à l'état 111
+    EPAISSEUR    décalage et aller à l'état 112
+    X            décalage et aller à l'état 113
+    Y            décalage et aller à l'état 114
+    X1           décalage et aller à l'état 115
+    Y1           décalage et aller à l'état 116
+    X2           décalage et aller à l'état 117
+    Y2           décalage et aller à l'état 118
+    X3           décalage et aller à l'état 119
+    Y3           décalage et aller à l'état 120
+    X4           décalage et aller à l'état 121
+    Y4           décalage et aller à l'état 122
+    HAUTEUR      décalage et aller à l'état 123
+    LARGEUR      décalage et aller à l'état 124
+    RAY          décalage et aller à l'état 125
+
+    attributs_variable  aller à l'état 287
+    critere             aller à l'état 288
+
+
+État 282
+
+   89 suite: SINON OUVRE_ACCOLADE • NL ope FERME_ACCOLADE
+
+    NL  décalage et aller à l'état 289
+
+
+État 283
+
+   24 liste_acc: NL attributs PV NL liste_acc •
+
+    $défaut  réduction par utilisation de la règle 24 (liste_acc)
+
+
+État 284
+
+   87 ope: fig '[' NUMBER ']' '.' critere '=' NUMBER PV NL •
+
+    $défaut  réduction par utilisation de la règle 87 (ope)
+
+
+État 285
+
+  105 predicat: '(' fig '[' NUMBER ']' '.' COULEUR IS color ')' •
+
+    $défaut  réduction par utilisation de la règle 105 (predicat)
+
+
+État 286
+
+  104 predicat: '(' fig '[' NUMBER ']' '.' critere SIGNE NUMBER ')' •
+
+    $défaut  réduction par utilisation de la règle 104 (predicat)
+
+
+État 287
+
+   85 ope: fig '[' NUMBER ']' '.' attributs_variable • PV NL
+
+    PV  décalage et aller à l'état 290
+
+
+État 288
+
+   87 ope: fig '[' NUMBER ']' '.' critere • '=' NUMBER PV NL
+
+    '='  décalage et aller à l'état 291
+
+
+État 289
+
+   89 suite: SINON OUVRE_ACCOLADE NL • ope FERME_ACCOLADE
+
+    CARRE      décalage et aller à l'état 82
+    RECTANGLE  décalage et aller à l'état 83
+    TRIANGLE   décalage et aller à l'état 84
+    CERCLE     décalage et aller à l'état 85
+    ELLIPSE    décalage et aller à l'état 86
+    LIGNE      décalage et aller à l'état 87
+    CHEMIN     décalage et aller à l'état 88
+    TEXTE      décalage et aller à l'état 89
+    SI         décalage et aller à l'état 14
+    IDENT      décalage et aller à l'état 235
+
+    $défaut  réduction par utilisation de la règle 88 (ope)
+
+    fig  aller à l'état 236
+    ope  aller à l'état 292
+
+
+État 290
+
+   85 ope: fig '[' NUMBER ']' '.' attributs_variable PV • NL
+
+    NL  décalage et aller à l'état 266
+
+
+État 291
+
+   87 ope: fig '[' NUMBER ']' '.' critere '=' • NUMBER PV NL
+
+    NUMBER  décalage et aller à l'état 293
+
+
+État 292
+
+   89 suite: SINON OUVRE_ACCOLADE NL ope • FERME_ACCOLADE
+
+    FERME_ACCOLADE  décalage et aller à l'état 294
+
+
+État 293
+
+   87 ope: fig '[' NUMBER ']' '.' critere '=' NUMBER • PV NL
+
+    PV  décalage et aller à l'état 277
+
+
+État 294
+
+   89 suite: SINON OUVRE_ACCOLADE NL ope FERME_ACCOLADE •
+
+    $défaut  réduction par utilisation de la règle 89 (suite)

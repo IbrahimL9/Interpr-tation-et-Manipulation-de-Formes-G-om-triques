@@ -1,0 +1,4 @@
+/home/etud/Documents/abed_arina_abouakil_ibrahim/build/CMakeFiles/rebuild_cache.dir
+/home/etud/Documents/abed_arina_abouakil_ibrahim/build/CMakeFiles/edit_cache.dir
+/home/etud/Documents/abed_arina_abouakil_ibrahim/build/CMakeFiles/dessin.dir
+/home/etud/Documents/abed_arina_abouakil_ibrahim/build/CMakeFiles/expressions.dir
