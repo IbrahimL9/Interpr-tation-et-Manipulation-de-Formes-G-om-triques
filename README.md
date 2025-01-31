@@ -1,1 +1,0 @@
-# -Interpr-tation-et-Manipulation-de-Formes-G-om-triques
